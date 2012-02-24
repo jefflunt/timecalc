@@ -16,22 +16,6 @@
       #body-wrapper {
         margin: 0 auto;
         width: 200px;
-        height: 170px;
-        position: relative;
-      }
-      
-      #time-result {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-      }
-      
-      .time-input {
-        float: left;
-      }
-      
-      .meridian {
-        float: right;
       }
       
       .invalid-time {
@@ -218,15 +202,19 @@
   <body>
     <div id="body-wrapper">
       <div id="time-block-left">
-        <input id="start-time" class="time-input" type="text" value="09:00">
-        <div id="start-meridian" class="meridian">AM</div>
+        <span id="start-meridian" class="meridian">
+          <input id="start-time" type="text" value="09:00">
+        AM</span>
       </div>
     
       <div id="time-block-right">
-        <input id="end-time" class="time-input" type="text" value="05:00">
-        <div id="end-meridian" class="meridian">PM</div>
+        <span id="end-meridian" class="meridian">
+          <input id="end-time" type="text" value="05:00">
+          PM
+        </span>
       </div>
-      <div id="time-result"></div>
+      
+      <span id="time-result"></span>
     </div>
   </body>
 </html>
