@@ -1,0 +1,233 @@
+<html>
+  <head>
+    <style type="text/css" media=screen>
+    <!--
+      body {
+        font-family: georgia, serif;
+        font-size: 40px;
+      }
+      
+      input {
+        font-family: georgia, serif; 
+        font-size: 40px;
+        width: 120px;
+      }
+      
+      #body-wrapper {
+        margin: 0 auto;
+        width: 200px;
+        height: 170px;
+        position: relative;
+      }
+      
+      #time-result {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+      
+      .time-input {
+        float: left;
+      }
+      
+      .meridian {
+        float: right;
+      }
+      
+      .invalid-time {
+        color: #bb0000;
+      }
+           
+      .sameDay {
+        color: #00bb00;
+      }
+      
+      .overnight {
+        color: #0000bb;
+      }
+    -->
+    </style>
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        var startTime = $("#start-time");
+        var startMeridian = $("#start-meridian");
+        var endTime = $("#end-time")
+        var endMeridian = $("#end-meridian");
+        
+        var timeResult = $("#time-result");
+        
+        var lastTimeFieldInFocus = startTime;
+        
+        recalculateTime();
+        focusAndSelectTextIn(lastTimeFieldInFocus);
+      
+        startTime.keyup(function(event) {
+          if (upOrDownArrow(event)) {
+            formatTime(startTime);
+            swapMeridian(startMeridian);
+            recalculateTime();
+            focusAndSelectTextIn(startTime);
+          } else if (enterKey(event)) {
+            formatTime(startTime);
+            focusAndSelectTextIn(endTime);
+            recalculateTime();
+          }
+        });
+        
+        endTime.keyup(function(event) {
+          if (upOrDownArrow(event)) {
+            formatTime(endTime);
+            swapMeridian(endMeridian);
+            recalculateTime();
+            focusAndSelectTextIn(endTime);
+          } else if (enterKey(event)) {
+            formatTime(endTime);
+            focusAndSelectTextIn(startTime);
+            recalculateTime();
+          }
+        });
+        
+        $(".time-entry").blur(function() {
+          lastTimeFieldInFocus = $(this);
+        });
+        
+        $(".meridian").click(function() {
+          if ($(this).text() === "AM") {
+            $(this).text("PM");
+          } else {
+            $(this).text("AM");
+          }
+          
+          focusAndSelectTextIn(lastTimeFieldInFocus);
+          recalculateTime();
+        });
+      });
+        
+      function enterKey(event) {
+        return (event.keyCode == 13);
+      }
+      
+      function upOrDownArrow(event) {
+        return ((event.keyCode == 38) || (event.keyCode == 40));
+      }
+      
+      function swapMeridian(element) {
+        if (element.text() === "AM") {
+          element.text("PM");
+        } else {
+          element.text("AM");
+        }
+      }
+      
+      function formatTime(element) {
+        var timeString = element.val();
+        timeString = timeString.replace(/:/, "");
+        while (timeString.length < 3) {
+          timeString += "0";
+        }
+        
+        if (timeString.length < 4) {
+          timeString = "0" + timeString;
+        }
+        
+        hrs = timeString.slice(0, 2);
+        min = timeString.slice(2, 4);
+        timeString = hrs + ":" + min;
+        
+        element.val(timeString);
+      }
+      
+      function focusAndSelectTextIn(element) {
+        element.focus();
+        element.select();
+      }
+      
+      function recalculateTime() {
+        var timeResult = $("#time-result");
+        var timeDifferenceInFractionalHours = calculateDifferenceInTime();
+        
+        timeResult.text(Math.abs(roundTwoDecimalPlaces(timeDifferenceInFractionalHours)) + " hrs");
+      }
+      
+      function calculateDifferenceInTime() {
+        var startTime = $("#start-time");
+        var startMeridian = $("#start-meridian");
+        var endTime = $("#end-time")
+        var endMeridian = $("#end-meridian");
+        
+        var startHour = parseInt(startTime.val().slice(0, 2), 10);
+        var startMin  = parseInt(startTime.val().slice(3, 5), 10);
+        var startMeridian = startMeridian.text();
+        
+        var endHour = parseInt(endTime.val().slice(0, 2), 10);
+        var endMin  = parseInt(endTime.val().slice(3, 5), 10);
+        var endMeridian = endMeridian.text();
+        
+        var startTimeInDecimal = getDecimalTime(startHour, startMin, startMeridian);
+        var endTimeInDecimal   = getDecimalTime(endHour, endMin, endMeridian);
+        
+        validateTimeField(startHour, startMin, startTime);
+        validateTimeField(endHour, endMin, endTime);
+        
+        if (startTimeInDecimal < endTimeInDecimal) {
+          colorizeTimeResult("same day");
+          return (endTimeInDecimal - startTimeInDecimal);
+        } else {
+          colorizeTimeResult("overnight");
+          return ((endTimeInDecimal - startTimeInDecimal)+24);
+        }
+      }
+      
+      function validateTimeField(hour, min, elementToStyle) {
+        if ((hour > 12) || (hour < 1) || (min > 59) || (min < 0)) {
+          elementToStyle.addClass("invalid-time");
+        } else {
+          elementToStyle.removeClass("invalid-time");
+        }
+      }
+      
+      function roundTwoDecimalPlaces(decimal) {
+        return (Math.round(decimal*Math.pow(10, 2))/(Math.pow(10, 2)));
+      }
+      
+      function getDecimalTime(hour, min, meridian) {
+        var decimalTime = hour;
+        decimalTime += (min/60);
+        
+        if (meridian == "PM") {
+          decimalTime += 12;
+        }
+        
+        return decimalTime;
+      }
+      
+      function colorizeTimeResult(colorCode) {
+        timeResult = $("#time-result");
+        if (colorCode == "same day") {
+          timeResult.addClass("sameDay");
+          timeResult.removeClass("overnight");
+        } else {
+          timeResult.addClass("overnight");
+          timeResult.removeClass("sameDay");
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="body-wrapper">
+      <div id="time-block-left">
+        <input id="start-time" class="time-input" type="text" value="09:00">
+        <div id="start-meridian" class="meridian">AM</div>
+      </div>
+    
+      <div id="time-block-right">
+        <input id="end-time" class="time-input" type="text" value="05:00">
+        <div id="end-meridian" class="meridian">PM</div>
+      </div>
+      <div id="time-result"></div>
+    </div>
+  </body>
+</html>
+  
