@@ -98,6 +98,7 @@
       }
       
       function swapMeridian(element) {
+        console.log(element);
         if (element.text() === "AM") {
           element.text("PM");
         } else {
@@ -202,15 +203,16 @@
   <body>
     <div id="body-wrapper">
       <div id="time-block-left">
-        <span id="start-meridian" class="meridian">
+        <span>
           <input id="start-time" type="text" value="09:00">
-        AM</span>
+          <span id="start-meridian" class="meridian">AM</span>
+        </span>
       </div>
     
       <div id="time-block-right">
-        <span id="end-meridian" class="meridian">
+        <span>
           <input id="end-time" type="text" value="05:00">
-          PM
+          <span id="end-meridian" class="meridian">PM</span>
         </span>
       </div>
       
