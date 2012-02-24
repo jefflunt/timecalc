@@ -10,7 +10,7 @@ You enter a **start time**, an **end time**, and the page updates with the numbe
 
 - Because this is for time sheet verification, it rounds the result to two decimal places.
 - It also does overnight calculations. So, if someone is working a graveyard shift from 9p-5a the calculator is smart enough to realize that it should still consider that 8 hours over two days, instead of -16 hours within the same day.
-- The time result output also color coded: green for "same day" results, and dark blue for "overnight/graveyard shift" results.
+- The time result output is color coded: green for "same day" results, and dark blue for "overnight/graveyard shift" results.
 
 **timecalc** only supports 12-hour times (with AM/PM indicators). If you enter 24-hour times (e.g. 14:23 - 2:23pm), or any other invalid time value (such as "0000"), the invalid time value will turn red.
 
