@@ -181,8 +181,10 @@
         var decimalTime = hour;
         decimalTime += (min/60);
         
-        if (meridian == "PM") {
+        if ((meridian == "PM") && (hour != 12)) {
           decimalTime += 12;
+        } else if ((meridian == "AM") && (hour == 12)) {
+          decimalTime -= 12;
         }
         
         return decimalTime;
@@ -216,7 +218,7 @@
         </span>
       </div>
       
-      <span id="time-result"></span>
+      <span id="time-result">8 hrs</span>
     </div>
   </body>
 </html>
