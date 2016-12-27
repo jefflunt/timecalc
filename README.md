@@ -1,7 +1,7 @@
 
 **timecalc** is the simplest possible way to calculate the difference between two times. I threw this together for a friend who needed to easily verify times entered on employee time sheets. 
 
-Try it out at [karmanebula.com/timecalc](http://karmanebula.com/timecalc).
+Try it out at [jefflunt.com/timecalc](https://www.jefflunt.com/timecalc).
 
 Usage
 -----
